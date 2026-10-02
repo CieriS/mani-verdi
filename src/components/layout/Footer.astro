@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import { emailUrl, navigation, phoneUrl, site, whatsappUrl } from '@/config/site';
+import Container from '../ui/Container.astro';
+import Icon from '../ui/Icon.astro';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+const linkClass = 'inline-flex min-h-11 items-center gap-2.5 text-muted hover:text-ink';
+---
+
+<footer class="border-t border-line bg-subtle pb-[calc(var(--spacing-cta-bar)+env(safe-area-inset-bottom))] md:pb-0">
+  <Container class="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+    <div>
+      <p class="flex items-center gap-2.5">
+        <span class="grid size-9 place-items-center rounded-full bg-primary text-on-primary">
+          <Icon name="leaf" size={18} />
+        </span>
+        <span class="font-display text-[1.3125rem] leading-none font-medium tracking-tight">{site.brand}</span>
+      </p>
+      <p class="mt-4 max-w-xs text-small text-muted">
+        {site.owner}, {site.role.toLowerCase()}. {site.area.label}.
+      </p>
+    </div>
+
+    <nav aria-label="Servizi">
+      <h2 class="font-sans text-label font-semibold tracking-[0.14em] text-ink uppercase">Servizi</h2>
+      <ul class="mt-3 text-small">
+        {
+          services.map((service) => (
+            <li>
+              <a href={`/servizi/${service.id}/`} class={linkClass}>
+                {service.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-label="Pagine">
+      <h2 class="font-sans text-label font-semibold tracking-[0.14em] text-ink uppercase">Il sito</h2>
+      <ul class="mt-3 text-small">
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href} class={linkClass}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li><a href="/#contatti" class={linkClass}>Contatti</a></li>
+        <li><a href="/privacy/" class={linkClass}>Privacy Policy</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-sans text-label font-semibold tracking-[0.14em] text-ink uppercase">Contatti</h2>
+      <ul class="mt-3 text-small">
+        <li>
+          <a href={phoneUrl} class={linkClass}><Icon name="phone" size={18} />{site.phone.display}</a>
+        </li>
+        <li>
+          <a href={whatsappUrl()} class={linkClass} rel="noopener"><Icon name="whatsapp" size={18} />WhatsApp</a>
+        </li>
+        <li>
+          <a href={emailUrl} class:list={[linkClass, 'break-all']}><Icon name="mail" size={18} />{site.email}</a>
+        </li>
+      </ul>
+    </div>
+  </Container>
+
+  <Container class="flex flex-col gap-1 border-t border-line py-6 text-small text-muted sm:flex-row sm:justify-between">
+    <p>© {year} {site.brand} di {site.owner} · P.IVA {site.vat}</p>
+    <p>{site.area.base} ({site.area.province})</p>
+  </Container>
+</footer>

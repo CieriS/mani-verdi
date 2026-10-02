@@ -1,0 +1,82 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  aria-label="Cambia tema"
+  class:list={[
+    'inline-flex size-11 items-center justify-center rounded-full text-ink',
+    'transition-transform duration-(--duration-fast) ease-out hover:text-primary active:scale-90',
+    className,
+  ]}
+>
+  <span class="theme-icon-moon"><Icon name="moon" /></span>
+  <span class="theme-icon-sun"><Icon name="sun" /></span>
+</button>
+
+<style is:global>
+  /* L'icona mostra il tema verso cui si passa */
+  .theme-icon-sun {
+    display: none;
+  }
+  :root[data-theme='dark'] .theme-icon-sun {
+    display: inline-flex;
+  }
+  :root[data-theme='dark'] .theme-icon-moon {
+    display: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme-icon-sun {
+      display: inline-flex;
+    }
+    :root:not([data-theme='light']) .theme-icon-moon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const current = () => root.dataset.theme ?? (media.matches ? 'dark' : 'light');
+
+  const updateLabels = () => {
+    const label = current() === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro';
+    document.querySelectorAll('[data-theme-toggle]').forEach((button) => button.setAttribute('aria-label', label));
+  };
+
+  const apply = (theme: string) => {
+    root.dataset.theme = theme;
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {
+      // Archiviazione non disponibile (es. navigazione privata): il tema vale solo per questa pagina.
+    }
+    updateLabels();
+  };
+
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = current() === 'dark' ? 'light' : 'dark';
+      // Dissolvenza morbida tra i due temi (solo opacity), dove supportata.
+      if (document.startViewTransition && !reducedMotion.matches) {
+        document.startViewTransition(() => apply(next));
+      } else {
+        apply(next);
+      }
+    });
+  });
+
+  media.addEventListener('change', updateLabels);
+  updateLabels();
+</script>

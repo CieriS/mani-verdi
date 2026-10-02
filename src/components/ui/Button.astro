@@ -1,0 +1,73 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon, { type IconName } from './Icon.astro';
+
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'md' | 'lg';
+
+type Props = {
+  variant?: Variant;
+  size?: Size;
+  icon?: IconName;
+  /** Posizione dell'icona rispetto al testo */
+  iconPosition?: 'start' | 'end';
+  /** Occupa tutta la larghezza disponibile */
+  block?: boolean;
+  class?: string;
+} & (
+  | ({ href: string } & Omit<HTMLAttributes<'a'>, 'class' | 'href'>)
+  | ({ href?: undefined } & Omit<HTMLAttributes<'button'>, 'class'>)
+);
+
+const {
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'start',
+  block = false,
+  class: className,
+  href,
+  ...rest
+} = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-primary text-on-primary hover:bg-primary-strong',
+  secondary: 'border border-line-strong bg-raised text-ink hover:border-primary hover:text-primary',
+  ghost: 'text-primary underline-offset-4 hover:underline',
+};
+
+const sizes: Record<Size, string> = {
+  md: 'min-h-11 px-5 text-small',
+  lg: 'min-h-13 px-6 text-body',
+};
+
+const classes = [
+  'group/button inline-flex items-center justify-center gap-2.5 rounded-full font-semibold',
+  'transition-transform duration-(--duration-fast) ease-out motion-safe:hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]',
+  'disabled:pointer-events-none disabled:opacity-60',
+  variants[variant],
+  sizes[size],
+  block ? 'w-full' : '',
+  className,
+];
+---
+
+{
+  href !== undefined ? (
+    <a href={href} class:list={classes} {...(rest as HTMLAttributes<'a'>)}>
+      {icon && iconPosition === 'start' && <Icon name={icon} />}
+      <span><slot /></span>
+      {icon && iconPosition === 'end' && (
+        <Icon name={icon} class="transition-transform duration-(--duration-fast) ease-out group-hover/button:translate-x-1" />
+      )}
+    </a>
+  ) : (
+    <button class:list={classes} {...(rest as HTMLAttributes<'button'>)}>
+      {icon && iconPosition === 'start' && <Icon name={icon} />}
+      <span><slot /></span>
+      {icon && iconPosition === 'end' && (
+        <Icon name={icon} class="transition-transform duration-(--duration-fast) ease-out group-hover/button:translate-x-1" />
+      )}
+    </button>
+  )
+}

@@ -1,0 +1,28 @@
+---
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  /** Aggiunge la micro-interazione di sollevamento (per card cliccabili) */
+  interactive?: boolean;
+  /** Rimuove il padding interno (es. card con immagine a filo) */
+  flush?: boolean;
+  class?: string;
+  [attribute: string]: unknown;
+}
+
+const { as: Tag = 'div', interactive = false, flush = false, class: className, ...rest } = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'relative overflow-hidden rounded-card border border-line bg-raised',
+    !flush && 'p-6 sm:p-7',
+    interactive &&
+      'group/card transition-transform duration-(--duration-base) ease-out motion-safe:hover:-translate-y-1 active:scale-[0.99]',
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

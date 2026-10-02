@@ -1,0 +1,156 @@
+---
+import type { ImageMetadata } from 'astro';
+import Icon from './Icon.astro';
+import ResponsiveImage from './ResponsiveImage.astro';
+
+interface Props {
+  before: ImageMetadata;
+  beforeAlt: string;
+  after: ImageMetadata;
+  afterAlt: string;
+  /** Titolo del lavoro: completa l'etichetta del cursore per gli screen reader */
+  label: string;
+  sizes?: string;
+  class?: string;
+}
+
+const { before, beforeAlt, after, afterAlt, label, sizes = '(min-width: 64rem) 50vw, 100vw', class: className } = Astro.props;
+---
+
+<div class:list={['before-after relative isolate overflow-hidden rounded-media select-none', className]} data-before-after>
+  <!-- "Dopo" sta sotto, "Prima" sopra e viene ritagliata dal divisorio -->
+  <ResponsiveImage src={after} alt={afterAlt} ratio="4/3" sizes={sizes} />
+  <div class="before-after__before absolute inset-0">
+    <ResponsiveImage src={before} alt={beforeAlt} ratio="4/3" sizes={sizes} class="h-full" />
+  </div>
+
+  <span class="before-after__tag left-3">Prima</span>
+  <span class="before-after__tag right-3">Dopo</span>
+
+  <!-- Cursore nativo: dà tastiera, focus e annunci agli screen reader senza codice in più -->
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label={`Confronto prima e dopo: ${label}. Sposta il divisorio per vedere il risultato.`}
+    aria-valuetext="Metà prima, metà dopo"
+    class="before-after__range"
+  />
+
+  <div class="before-after__handle" aria-hidden="true">
+    <span class="before-after__knob"><Icon name="drag" size={18} /></span>
+  </div>
+</div>
+
+<style is:global>
+  .before-after {
+    --pos: 50%;
+    /* Lo scorrimento verticale della pagina resta libero, il trascinamento orizzontale muove il divisorio */
+    touch-action: pan-y;
+    cursor: ew-resize;
+  }
+  .before-after__before {
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+  .before-after__tag {
+    position: absolute;
+    top: 0.75rem;
+    z-index: 1;
+    border-radius: 999px;
+    background-color: rgb(17 22 19 / 0.78);
+    color: #fff;
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    padding: 0.5rem 0.75rem;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+  /* Il cursore copre l'intera immagine ma resta invisibile: si vede solo la maniglia */
+  .before-after__range {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    /* Mouse e touch sono gestiti sull'intero riquadro; il cursore serve a tastiera e screen reader */
+    pointer-events: none;
+  }
+  .before-after__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    z-index: 1;
+    width: 2px;
+    margin-left: -1px;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.18);
+    pointer-events: none;
+  }
+  .before-after__knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: 999px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.28);
+    color: #1a1f1b;
+    transform: translate(-50%, -50%);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  .before-after:active .before-after__knob {
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  .before-after__range:focus-visible ~ .before-after__handle .before-after__knob {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-before-after]').forEach((root) => {
+    const range = root.querySelector<HTMLInputElement>('input[type="range"]');
+    if (!range) return;
+
+    const render = () => {
+      const value = Number(range.value);
+      root.style.setProperty('--pos', `${value}%`);
+      range.setAttribute('aria-valuetext', `${value}% prima, ${100 - value}% dopo`);
+    };
+
+    // Tastiera e tecnologie assistive passano dal cursore nativo.
+    range.addEventListener('input', render);
+
+    // Mouse e touch: si può trascinare da qualsiasi punto dell'immagine, non solo dalla maniglia.
+    const moveTo = (clientX: number) => {
+      const rect = root.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      range.value = String(Math.round(ratio * 100));
+      render();
+    };
+    let dragging = false;
+    root.addEventListener('pointerdown', (event) => {
+      dragging = true;
+      root.setPointerCapture(event.pointerId);
+      moveTo(event.clientX);
+    });
+    root.addEventListener('pointermove', (event) => {
+      if (dragging) moveTo(event.clientX);
+    });
+    const stop = () => (dragging = false);
+    root.addEventListener('pointerup', stop);
+    root.addEventListener('pointercancel', stop);
+
+    render();
+  });
+</script>

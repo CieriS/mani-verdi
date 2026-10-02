@@ -1,0 +1,115 @@
+---
+import '@/styles/global.css';
+import { getImage as optimize } from 'astro:assets';
+import displayFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import textFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import { getImage, slots } from '@/config/images';
+import { analytics, site } from '@/config/site';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+import MobileCTABar from './MobileCTABar.astro';
+
+interface Props {
+  /** Title della pagina, senza il nome del brand (viene aggiunto in automatico) */
+  title: string;
+  description: string;
+  /** Blocchi di dati strutturati JSON-LD */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Mostra il titolo così com'è, senza aggiungere il brand */
+  rawTitle?: boolean;
+}
+
+const { title, description, jsonLd = [], noindex = false, rawTitle = false } = Astro.props;
+
+const fullTitle = rawTitle ? title : `${title} | ${site.brand}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = await optimize({ src: getImage(slots.heroMobile), width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const ogImageUrl = new URL(ogImage.src, Astro.site);
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <!-- Tema: eseguito prima del rendering per evitare il lampo del tema sbagliato -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        try {
+          var saved = localStorage.getItem('theme');
+          if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+        } catch (e) {}
+      })();
+    </script>
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#faf7f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111613" media="(prefers-color-scheme: dark)" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={textFont} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {jsonLd.map((data) => <script is:inline type="application/ld+json" set:html={JSON.stringify(data)} />)}
+
+    {/* Punto di integrazione analytics: vedi `analytics` in src/config/site.ts */}
+    {analytics && <script is:inline defer src={analytics.src} {...analytics.attributes} />}
+  </head>
+  <body>
+    <a
+      href="#contenuto"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-5 focus:py-3 focus:font-semibold focus:text-on-primary"
+    >
+      Vai al contenuto
+    </a>
+    <Header />
+    <main id="contenuto" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <Footer />
+    <MobileCTABar />
+
+    <script>
+      // Fallback del reveal per i browser senza scroll-driven animations.
+      const items = document.querySelectorAll('.reveal');
+      if (!CSS.supports('animation-timeline: view()')) {
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+          );
+          items.forEach((item) => observer.observe(item));
+        } else {
+          items.forEach((item) => item.classList.add('is-visible'));
+        }
+      }
+    </script>
+  </body>
+</html>

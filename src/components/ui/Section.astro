@@ -1,0 +1,28 @@
+---
+import Container from './Container.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  /** Riga breve sopra il titolo */
+  eyebrow?: string;
+  intro?: string;
+  /** "subtle" alterna lo sfondo per separare visivamente le sezioni */
+  tone?: 'default' | 'subtle';
+  class?: string;
+}
+
+const { id, title, eyebrow, intro, tone = 'default', class: className } = Astro.props;
+const headingId = `${id}-titolo`;
+---
+
+<section id={id} aria-labelledby={headingId} class:list={['py-section', tone === 'subtle' && 'bg-subtle', className]}>
+  <Container>
+    <header class="reveal mb-10 max-w-prose sm:mb-14">
+      {eyebrow && <p class="mb-3 text-label font-semibold tracking-[0.14em] text-accent uppercase">{eyebrow}</p>}
+      <h2 id={headingId} class="text-h2">{title}</h2>
+      {intro && <p class="mt-4 text-lead text-muted">{intro}</p>}
+    </header>
+    <slot />
+  </Container>
+</section>

@@ -1,0 +1,26 @@
+---
+import { phoneUrl, whatsappUrl } from '@/config/site';
+import Icon from '../ui/Icon.astro';
+
+const buttonClass =
+  'flex min-h-12 items-center justify-center gap-2.5 rounded-full text-small font-semibold transition-transform duration-(--duration-fast) ease-out active:scale-[0.97]';
+---
+
+<!-- Barra fissa solo su mobile. Il footer riserva lo stesso spazio in basso, così non viene mai coperto. -->
+<nav
+  aria-label="Contatti rapidi"
+  class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur-md md:hidden"
+>
+  <ul class="grid grid-cols-2 gap-2.5">
+    <li>
+      <a href={phoneUrl} class:list={[buttonClass, 'border border-line-strong bg-raised text-ink']}>
+        <Icon name="phone" />Chiama
+      </a>
+    </li>
+    <li>
+      <a href={whatsappUrl()} rel="noopener" class:list={[buttonClass, 'bg-primary text-on-primary']}>
+        <Icon name="whatsapp" />WhatsApp
+      </a>
+    </li>
+  </ul>
+</nav>
