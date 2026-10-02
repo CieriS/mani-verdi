@@ -1,0 +1,142 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage as optimize } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import FinalCTA from '@/components/sections/FinalCTA.astro';
+import Button from '@/components/ui/Button.astro';
+import Container from '@/components/ui/Container.astro';
+import Icon from '@/components/ui/Icon.astro';
+import ResponsiveImage from '@/components/ui/ResponsiveImage.astro';
+import { getImage } from '@/config/images';
+import { cta, site, whatsappUrl } from '@/config/site';
+import { breadcrumbSchema, serviceSchema } from '@/lib/schema';
+
+export const getStaticPaths = (async () => {
+  const services = await getCollection('services');
+  return services.map((service) => ({ params: { slug: service.id }, props: { service } }));
+}) satisfies GetStaticPaths;
+
+const { service } = Astro.props;
+const { Content } = await render(service);
+const origin = Astro.site!;
+
+const others = (await getCollection('services'))
+  .filter((other) => other.id !== service.id)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const image = getImage(service.data.image);
+const shareImage = await optimize({ src: image, width: 1200, format: 'jpg' });
+const path = `/servizi/${service.id}/`;
+
+const title = `${service.data.title} a ${site.area.short}`;
+const description = `${service.data.summary} A ${site.area.label}.`;
+const jsonLd = [
+  serviceSchema(
+    origin,
+    { id: service.id, title: service.data.title, summary: service.data.summary },
+    new URL(shareImage.src, origin).href,
+  ),
+  breadcrumbSchema(origin, [
+    { name: 'Home', path: '/' },
+    { name: 'Servizi', path: '/#servizi' },
+    { name: service.data.title, path },
+  ]),
+];
+const whatsappMessage = `Ciao ${site.owner.split(' ')[0]}, vorrei informazioni su: ${service.data.title.toLowerCase()}.`;
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article>
+    <Container class="pt-8 pb-14 sm:pt-10 lg:pb-20">
+      <nav aria-label="Percorso" class="text-small text-muted">
+        <ol class="flex flex-wrap items-center gap-x-2">
+          <li><a href="/" class="inline-flex min-h-11 items-center hover:text-ink">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/#servizi" class="inline-flex min-h-11 items-center hover:text-ink">Servizi</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-ink">{service.data.title}</li>
+        </ol>
+      </nav>
+
+      <div class="mt-6 grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+        <div>
+          <p class="flex items-start gap-2 text-small font-semibold text-accent">
+            <Icon name="pin" size={18} class="mt-0.5" />
+            <span>{site.area.label}</span>
+          </p>
+          <h1 class="mt-4 text-display">{service.data.title}</h1>
+          <p class="mt-5 max-w-[34rem] text-lead text-muted">{service.data.benefit}</p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button href="#contatti" size="lg" icon="arrow" iconPosition="end">{cta.primary.label}</Button>
+            <Button href={whatsappUrl(whatsappMessage)} variant="secondary" size="lg" icon="whatsapp" rel="noopener">
+              Scrivimi su WhatsApp
+            </Button>
+          </div>
+          <p class="mt-4 text-small text-muted">{cta.note}</p>
+        </div>
+
+        <ResponsiveImage
+          src={image}
+          alt={service.data.imageAlt ?? `Segnaposto: foto per ${service.data.title}`}
+          ratio="4/3"
+          widths={[400, 640, 960, 1280]}
+          sizes="(min-width: 64rem) 40vw, 100vw"
+          priority
+          class="rounded-media"
+          transitionName={`servizio-${service.id}`}
+        />
+      </div>
+    </Container>
+
+    <div class="border-t border-line bg-subtle py-section">
+      <Container class="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
+        <div class="prose text-muted [&_h2]:text-ink [&_strong]:text-ink">
+          <Content />
+        </div>
+
+        {
+          service.data.includes.length > 0 && (
+            <aside aria-labelledby="comprende-titolo" class="self-start rounded-card border border-line bg-raised p-6 sm:p-8 lg:sticky lg:top-24">
+              <h2 id="comprende-titolo" class="text-h3">
+                Cosa comprende
+              </h2>
+              <ul class="mt-5 grid gap-3.5">
+                {service.data.includes.map((item) => (
+                  <li class="flex items-start gap-3">
+                    <span class="mt-1 text-primary">
+                      <Icon name="check" size={18} />
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )
+        }
+      </Container>
+    </div>
+  </article>
+
+  <FinalCTA selectedService={service.id} />
+
+  <section aria-labelledby="altri-servizi-titolo" class="border-t border-line bg-subtle py-14">
+    <Container>
+      <h2 id="altri-servizi-titolo" class="text-h3">Altri servizi</h2>
+      <ul class="mt-5 flex flex-wrap gap-2.5">
+        {
+          others.map((other) => (
+            <li>
+              <a
+                href={`/servizi/${other.id}/`}
+                class="inline-flex min-h-11 items-center rounded-full border border-line-strong bg-raised px-4 text-small font-medium text-ink transition-transform duration-(--duration-fast) ease-out hover:border-primary hover:text-primary active:scale-[0.97]"
+              >
+                {other.data.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+</BaseLayout>

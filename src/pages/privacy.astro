@@ -1,0 +1,98 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import { emailUrl, placeholder, site } from '@/config/site';
+
+const updated = new Intl.DateTimeFormat(site.locale, { dateStyle: 'long' }).format(new Date(site.privacyUpdatedAt));
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description={`Come ${site.brand} tratta i dati personali di chi visita il sito e invia una richiesta di contatto.`}
+>
+  <Container class="py-14 lg:py-20">
+    <div class="prose">
+      <h1 class="text-h2">Privacy Policy</h1>
+      <p class="text-muted">Ultimo aggiornamento: {updated}</p>
+
+      <p>
+        Questa pagina spiega quali dati personali vengono raccolti attraverso questo sito, perché e per quanto tempo,
+        ai sensi del Regolamento (UE) 2016/679 (GDPR).
+      </p>
+
+      <h2>Titolare del trattamento</h2>
+      <p>
+        {site.owner} ({site.brand}), P.IVA {site.vat}<br />
+        Sede: {site.legalAddress ?? <span class="placeholder-mark">{placeholder('INDIRIZZO SEDE LEGALE')}</span>}<br />
+        Email: <a href={emailUrl}>{site.email}</a><br />
+        Telefono: {site.phone.display}
+        {site.pec && <><br />PEC: {site.pec}</>}
+      </p>
+
+      <h2>Quali dati raccolgo e perché</h2>
+      <p>
+        Il sito raccoglie dati personali solo quando compili il modulo di contatto o mi scrivi direttamente per
+        telefono, WhatsApp o email.
+      </p>
+      <ul>
+        <li><strong>Dati richiesti dal modulo:</strong> nome, numero di telefono, tipo di intervento ed eventuale messaggio.</li>
+        <li>
+          <strong>Finalità:</strong> ricontattarti, fissare il sopralluogo e preparare il preventivo che hai richiesto.
+        </li>
+        <li>
+          <strong>Base giuridica:</strong> esecuzione di misure precontrattuali adottate su tua richiesta (art. 6, par. 1,
+          lett. b del GDPR).
+        </li>
+      </ul>
+      <p>Non uso i tuoi dati per inviarti pubblicità e non li cedo a terzi per finalità di marketing.</p>
+
+      <h2>Chi può accedere ai dati</h2>
+      <p>I dati sono trattati dal titolare e, per la sola parte tecnica, dai fornitori che permettono al sito di funzionare:</p>
+      <ul>
+        <li>
+          <strong>Invio del modulo:</strong>
+          <a href={site.formProvider.url} rel="noopener">{site.formProvider.name}</a>, che recapita il contenuto del modulo
+          alla casella email del titolare.
+        </li>
+        <li>
+          <strong>Hosting del sito:</strong>
+          {site.hostingProvider ?? <span class="placeholder-mark">{placeholder('FORNITORE HOSTING')}</span>}.
+        </li>
+        <li>
+          <strong>WhatsApp:</strong> se scegli di scrivermi su WhatsApp, la conversazione avviene sulla piattaforma di
+          WhatsApp Ireland Ltd., secondo la sua informativa privacy.
+        </li>
+      </ul>
+      <p>
+        Alcuni di questi fornitori possono trattare i dati al di fuori dell’Unione Europea, sulla base delle garanzie
+        previste dal GDPR (ad esempio clausole contrattuali standard).
+      </p>
+
+      <h2>Per quanto tempo conservo i dati</h2>
+      <p>
+        Conservo i dati delle richieste per il tempo necessario a risponderti e a gestire l’eventuale lavoro. Se alla
+        richiesta non segue un incarico, li cancello entro
+        <span class="placeholder-mark">{placeholder('PERIODO DI CONSERVAZIONE, es. 12 mesi')}</span>. I dati legati a
+        lavori eseguiti sono conservati per il tempo previsto dagli obblighi fiscali e contabili.
+      </p>
+
+      <h2>Cookie e statistiche</h2>
+      <p>
+        Questo sito non usa cookie di profilazione né strumenti di tracciamento, quindi non mostra alcun banner. L’unica
+        informazione salvata sul tuo dispositivo è la preferenza tra tema chiaro e tema scuro, che resta nel tuo browser
+        e non viene trasmessa a nessuno.
+      </p>
+
+      <h2>I tuoi diritti</h2>
+      <p>
+        Puoi chiedere in qualsiasi momento di accedere ai tuoi dati, correggerli, cancellarli, limitarne il trattamento,
+        opporti al trattamento o riceverli in un formato portabile (artt. 15–22 del GDPR). Per farlo basta scrivere a
+        <a href={emailUrl}>{site.email}</a>.
+      </p>
+      <p>
+        Se ritieni che il trattamento violi la normativa, puoi presentare reclamo al
+        <a href="https://www.garanteprivacy.it" rel="noopener">Garante per la protezione dei dati personali</a>.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

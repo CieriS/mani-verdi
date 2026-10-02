@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import Container from '@/components/ui/Container.astro';
+import { cta } from '@/config/site';
+---
+
+<BaseLayout title="Pagina non trovata" description="La pagina che cerchi non esiste o è stata spostata." noindex>
+  <Container class="py-section text-center">
+    <p class="text-label font-semibold tracking-[0.14em] text-accent uppercase">Errore 404</p>
+    <h1 class="mx-auto mt-4 max-w-2xl text-display">Questa pagina non c’è.</h1>
+    <p class="mx-auto mt-5 max-w-md text-lead text-muted">
+      Forse il link è vecchio o scritto male. Dalla home trovi tutto quello che ti serve.
+    </p>
+    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+      <Button href="/" size="lg">Torna alla home</Button>
+      <Button href={cta.primary.href} variant="secondary" size="lg">{cta.primary.label}</Button>
+    </div>
+  </Container>
+</BaseLayout>
