@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import { site } from '@/config/site';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import Section from '../ui/Section.astro';
+
+const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(reviews.map(async (review) => ({ review, Content: (await render(review)).Content })));
+const dateFormat = new Intl.DateTimeFormat(site.locale, { month: 'long', year: 'numeric' });
+---
+
+<Section
+  id="recensioni"
+  eyebrow="Recensioni"
+  title="Cosa dice chi mi ha chiamato"
+  intro="Le parole dei clienti, riportate così come sono state scritte."
+>
+  <ul class="grid gap-5 md:grid-cols-3">
+    {
+      items.map(({ review, Content }, index) => (
+        <li class="reveal" style={`--i:${index % 3}`}>
+          <Card as="figure" class="flex h-full flex-col">
+            {review.data.rating && (
+              <p class="mb-3 text-accent" aria-label={`Valutazione: ${review.data.rating} su 5`}>
+                <span aria-hidden="true">{'★'.repeat(review.data.rating)}</span>
+              </p>
+            )}
+            <blockquote class:list={['flex-1', review.data.placeholder ? 'placeholder-text' : 'text-ink']}>
+              <Content />
+            </blockquote>
+            <figcaption class="mt-5 border-t border-line pt-4 text-small">
+              <span class:list={['font-semibold', review.data.placeholder && 'placeholder-mark']}>{review.data.author}</span>
+              <span class="mt-1 block text-muted">
+                {[review.data.place, review.data.date && dateFormat.format(review.data.date)].filter(Boolean).join(' · ')}
+              </span>
+              {review.data.sourceUrl && (
+                <a href={review.data.sourceUrl} rel="noopener" class="mt-1 inline-flex min-h-11 items-center text-primary underline underline-offset-4">
+                  Leggi su Google
+                </a>
+              )}
+            </figcaption>
+          </Card>
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    site.googleBusinessUrl && (
+      <p class="reveal mt-8">
+        <Button href={site.googleBusinessUrl} variant="secondary" icon="arrow" iconPosition="end" rel="noopener">
+          Leggi tutte le recensioni su Google
+        </Button>
+      </p>
+    )
+  }
+</Section>

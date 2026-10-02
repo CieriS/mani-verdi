@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from '@/config/images';
+import Card from '../ui/Card.astro';
+import Icon from '../ui/Icon.astro';
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+import Section from '../ui/Section.astro';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Section
+  id="servizi"
+  eyebrow="Servizi"
+  title="Cosa posso fare per il tuo verde"
+  intro="Dal taglio del prato al giardino nuovo. Scegli quello che ti serve: il resto lo vediamo insieme al sopralluogo."
+>
+  <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      services.map((service, index) => (
+        <li class="reveal" style={`--i:${index % 3}`}>
+          <Card as="article" interactive flush class="flex h-full flex-col">
+            <ResponsiveImage
+              src={getImage(service.data.image)}
+              alt={service.data.imageAlt ?? `Segnaposto: foto per ${service.data.title}`}
+              ratio="3/2"
+              transitionName={`servizio-${service.id}`}
+            />
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-h3">
+                {/* Il link copre tutta la card: un solo target ampio, un solo annuncio per gli screen reader */}
+                <a href={`/servizi/${service.id}/`} class="after:absolute after:inset-0 after:content-['']">
+                  {service.data.title}
+                </a>
+              </h3>
+              <p class="mt-2.5 flex-1 text-muted">{service.data.benefit}</p>
+              <p class="mt-5 inline-flex items-center gap-2 text-small font-semibold text-primary" aria-hidden="true">
+                Scopri il servizio
+                <Icon
+                  name="arrow"
+                  size={18}
+                  class="transition-transform duration-(--duration-fast) ease-out group-hover/card:translate-x-1"
+                />
+              </p>
+            </div>
+          </Card>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

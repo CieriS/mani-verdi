@@ -1,0 +1,44 @@
+---
+import { site } from '@/config/site';
+import Section from '../ui/Section.astro';
+
+const steps = [
+  {
+    title: site.freeSurvey ? 'Sopralluogo gratuito' : 'Sopralluogo',
+    text: 'Vengo a vedere il giardino di persona. Mi racconti cosa ti serve, io guardo cosa c’è da fare e ti dico cosa conviene davvero.',
+  },
+  {
+    title: 'Preventivo scritto e chiaro',
+    text: 'Ricevi un preventivo con lavorazioni, tempi e prezzo, smaltimento compreso. Sai quanto spendi prima che io cominci.',
+  },
+  {
+    title: 'Lavoro e pulizia finale',
+    text: 'Faccio il lavoro nei tempi concordati, porto via il verde e lascio pulito. Tu trovi il giardino pronto.',
+  },
+];
+---
+
+<Section
+  id="come-lavoro"
+  eyebrow="Come lavoro"
+  title="Tre passi, nessuna sorpresa"
+  intro="Sai sempre cosa succede, quando e quanto costa."
+  tone="subtle"
+>
+  <ol class="grid gap-5 md:grid-cols-3">
+    {
+      steps.map((step, index) => (
+        <li class="reveal rounded-card border border-line bg-raised p-6 sm:p-7" style={`--i:${index}`}>
+          <span class="font-display text-h2 text-accent" aria-hidden="true">
+            {index + 1}
+          </span>
+          <h3 class="mt-3 text-h3">
+            <span class="sr-only">Passo {index + 1}: </span>
+            {step.title}
+          </h3>
+          <p class="mt-2.5 text-muted">{step.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</Section>

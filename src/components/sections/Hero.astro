@@ -1,0 +1,80 @@
+---
+import type { ImageMetadata } from 'astro';
+import { getImage as optimize } from 'astro:assets';
+import { getImage, slots } from '@/config/images';
+import { cta, site, whatsappUrl } from '@/config/site';
+import Button from '../ui/Button.astro';
+import Container from '../ui/Container.astro';
+import Icon from '../ui/Icon.astro';
+
+// Art direction: su telefono foto orizzontale 4:3 (lascia titolo e pulsanti sopra la piega),
+// su desktop foto verticale 4:5 accanto al testo. Il browser scarica solo quella che serve.
+const mobile = getImage(slots.heroMobile);
+const desktop = getImage(slots.heroDesktop);
+const DESKTOP_QUERY = '(min-width: 64rem)';
+
+async function variants(src: ImageMetadata, widths: number[], ratio: number, format: 'avif' | 'webp' | 'jpg') {
+  const usable = widths.filter((w) => w <= src.width);
+  const list = await Promise.all(
+    (usable.length ? usable : [src.width]).map(async (width) => {
+      const image = await optimize({ src, width, height: Math.round(width / ratio), fit: 'cover', format });
+      return { url: image.src, width };
+    }),
+  );
+  return { srcset: list.map((v) => `${v.url} ${v.width}w`).join(', '), fallback: list[Math.min(1, list.length - 1)]! };
+}
+
+const mobileWidths = [400, 640, 800, 1200];
+const desktopWidths = [480, 640, 960, 1280];
+const sources = [
+  { media: DESKTOP_QUERY, type: 'image/avif', sizes: '(min-width: 80rem) 32rem, 42vw', ...(await variants(desktop, desktopWidths, 4 / 5, 'avif')) },
+  { media: DESKTOP_QUERY, type: 'image/webp', sizes: '(min-width: 80rem) 32rem, 42vw', ...(await variants(desktop, desktopWidths, 4 / 5, 'webp')) },
+  { media: undefined, type: 'image/avif', sizes: '100vw', ...(await variants(mobile, mobileWidths, 4 / 3, 'avif')) },
+  { media: undefined, type: 'image/webp', sizes: '100vw', ...(await variants(mobile, mobileWidths, 4 / 3, 'webp')) },
+];
+const fallback = await variants(mobile, mobileWidths, 4 / 3, 'jpg');
+---
+
+<section aria-labelledby="hero-titolo" class="pt-10 pb-14 sm:pt-14 lg:pt-20 lg:pb-24">
+  <Container class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
+    <div>
+      <p class="flex items-start gap-2 text-small font-semibold text-accent">
+        <Icon name="pin" size={18} class="mt-0.5" />
+        <span>{site.role} a {site.area.label}</span>
+      </p>
+      <h1 id="hero-titolo" class="mt-5 text-display">Il tuo giardino in ordine, senza che tu debba pensarci.</h1>
+      <p class="mt-6 max-w-[34rem] text-lead text-muted">
+        Sono {site.owner}. Mi occupo di manutenzione, potature, prati e nuovi giardini.
+        {
+          site.freeSurvey
+            ? ' Vengo a vedere il lavoro di persona, gratis, e ti lascio un preventivo scritto.'
+            : ' Vengo a vedere il lavoro di persona e ti lascio un preventivo scritto.'
+        }
+      </p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button href={cta.primary.href} size="lg" icon="arrow" iconPosition="end">{cta.primary.label}</Button>
+        <Button href={whatsappUrl()} variant="secondary" size="lg" icon="whatsapp" rel="noopener">
+          Scrivimi su WhatsApp
+        </Button>
+      </div>
+      <p class="mt-4 text-small text-muted">{cta.note}</p>
+    </div>
+
+    <picture class="block aspect-[4/3] overflow-hidden rounded-media bg-subtle lg:aspect-[4/5]">
+      {sources.map((s) => <source media={s.media} type={s.type} srcset={s.srcset} sizes={s.sizes} />)}
+      <img
+        src={fallback.fallback.url}
+        srcset={fallback.srcset}
+        sizes="100vw"
+        width={fallback.fallback.width}
+        height={Math.round((fallback.fallback.width * 3) / 4)}
+        alt="Giardino curato con prato tagliato e siepi in ordine"
+        loading="eager"
+        decoding="sync"
+        fetchpriority="high"
+        class="h-full w-full object-cover"
+      />
+    </picture>
+  </Container>
+</section>

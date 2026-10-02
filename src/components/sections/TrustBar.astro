@@ -1,0 +1,35 @@
+---
+import { site } from '@/config/site';
+import Container from '../ui/Container.astro';
+import Icon, { type IconName } from '../ui/Icon.astro';
+
+// Solo fatti presenti in src/config/site.ts: le voci senza dato non vengono mostrate.
+const facts: { icon: IconName; label: string; value: string }[] = [
+  ...(site.yearsOfExperience
+    ? [{ icon: 'leaf' as const, label: 'Esperienza', value: `${site.yearsOfExperience} anni di lavoro` }]
+    : []),
+  ...(site.freeSurvey ? [{ icon: 'check' as const, label: 'Sopralluogo', value: 'Gratuito e senza impegno' }] : []),
+  { icon: 'pin', label: 'Zona', value: site.area.label },
+  { icon: 'document', label: 'Partita IVA', value: site.vat },
+];
+---
+
+<section aria-label="In breve" class="border-y border-line bg-subtle">
+  <Container>
+    <ul class="grid gap-x-8 gap-y-5 py-7 sm:grid-cols-3">
+      {
+        facts.map((fact) => (
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 text-primary">
+              <Icon name={fact.icon} size={22} />
+            </span>
+            <p class="text-small">
+              <span class="block text-label font-semibold tracking-[0.1em] text-muted uppercase">{fact.label}</span>
+              <span class="font-medium text-ink">{fact.value}</span>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</section>

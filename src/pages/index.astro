@@ -1,0 +1,48 @@
+---
+import { getImage as optimize } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import About from '@/components/sections/About.astro';
+import FAQ from '@/components/sections/FAQ.astro';
+import FinalCTA from '@/components/sections/FinalCTA.astro';
+import Hero from '@/components/sections/Hero.astro';
+import Portfolio from '@/components/sections/Portfolio.astro';
+import Process from '@/components/sections/Process.astro';
+import Reviews from '@/components/sections/Reviews.astro';
+import Services from '@/components/sections/Services.astro';
+import TrustBar from '@/components/sections/TrustBar.astro';
+import { getImage, slots } from '@/config/images';
+import { site } from '@/config/site';
+import { faqSchema, localBusinessSchema, plainText } from '@/lib/schema';
+
+const origin = Astro.site!;
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const faq = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const businessImage = await optimize({ src: getImage(slots.heroMobile), width: 1200, format: 'jpg' });
+
+const title = `${site.role} a ${site.area.short}: manutenzione, potature e giardini | ${site.brand}`;
+const description = `${site.owner}, ${site.role.toLowerCase()} a ${site.area.label}. Manutenzione giardini, potature, prati e irrigazione.${
+  site.freeSurvey ? ' Sopralluogo gratuito e preventivo scritto.' : ' Preventivo scritto.'
+}`;
+
+const jsonLd = [
+  localBusinessSchema(
+    origin,
+    services.map((s) => ({ id: s.id, title: s.data.title, summary: s.data.summary })),
+    new URL(businessImage.src, origin).href,
+  ),
+  faqSchema(faq.map((entry) => ({ question: entry.data.question, answer: plainText(entry.body) }))),
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd} rawTitle>
+  <Hero />
+  <TrustBar />
+  <Services />
+  <Process />
+  <Portfolio />
+  <About />
+  <Reviews />
+  <FAQ />
+  <FinalCTA />
+</BaseLayout>

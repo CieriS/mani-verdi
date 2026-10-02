@@ -1,0 +1,43 @@
+---
+import { getImage, slots } from '@/config/images';
+import { cta, phoneUrl, site } from '@/config/site';
+import Button from '../ui/Button.astro';
+import Container from '../ui/Container.astro';
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+---
+
+<section id="chi-sono" aria-labelledby="chi-sono-titolo" class="bg-subtle py-section">
+  <Container class="grid items-center gap-10 md:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <ResponsiveImage
+      src={getImage(slots.about)}
+      alt={`${site.owner} al lavoro in un giardino`}
+      ratio="4/5"
+      widths={[400, 640, 960]}
+      sizes="(min-width: 48rem) 38vw, 100vw"
+      class="reveal mx-auto w-full max-w-md rounded-media"
+    />
+
+    <div class="reveal">
+      <p class="mb-3 text-label font-semibold tracking-[0.14em] text-accent uppercase">Chi sono</p>
+      <h2 id="chi-sono-titolo" class="text-h2">Piacere, {site.owner.split(' ')[0]}.</h2>
+      <div class="mt-6 max-w-prose space-y-4 text-lead text-muted">
+        <p>
+          Sono {site.owner} e {site.brand} è il mio lavoro: curo giardini, siepi, prati e terrazzi a
+          {site.area.label}.
+        </p>
+        <p>
+          Lavoro in modo semplice. Vengo a vedere di persona, ti dico cosa serve subito e cosa può aspettare, e metto
+          tutto per iscritto prima di cominciare.
+        </p>
+        <p>
+          Quando chiami {site.brand} parli con me, dal primo sopralluogo all’ultima pulizia. Niente passaggi di mano:
+          chi ti fa il preventivo è la stessa persona che fa il lavoro.
+        </p>
+      </div>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Button href={cta.primary.href} size="lg">{cta.primary.label}</Button>
+        <Button href={phoneUrl} variant="secondary" size="lg" icon="phone">{site.phone.display}</Button>
+      </div>
+    </div>
+  </Container>
+</section>

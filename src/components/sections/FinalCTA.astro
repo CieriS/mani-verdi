@@ -1,0 +1,220 @@
+---
+import { getCollection } from 'astro:content';
+import { cta, emailUrl, phoneUrl, site, whatsappUrl } from '@/config/site';
+import Button from '../ui/Button.astro';
+import Container from '../ui/Container.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  /** Servizio preselezionato nel form (usato nelle pagine servizio) */
+  selectedService?: string;
+}
+
+const { selectedService } = Astro.props;
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+
+const accessKey = import.meta.env.PUBLIC_FORM_ACCESS_KEY ?? '';
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://api.web3forms.com/submit';
+
+const firstName = site.owner.split(' ')[0];
+const request = site.freeSurvey ? 'fissare un sopralluogo' : 'ricevere un preventivo';
+const messages = {
+  greeting: `Ciao ${firstName}, vorrei ${request}.`,
+  success: `Richiesta ricevuta, grazie. Ti richiamo io per ${site.freeSurvey ? 'fissare il sopralluogo' : 'parlare del preventivo'}.`,
+  error: 'Non sono riuscito a inviare la richiesta. Riprova tra poco, oppure chiamami o scrivimi su WhatsApp.',
+  whatsapp: 'Ti ho aperto WhatsApp con il messaggio già scritto: premi invia e ti rispondo lì.',
+  sending: 'Invio in corso…',
+};
+
+const fieldClass =
+  'mt-2 block min-h-12 w-full rounded-field border border-line-strong bg-raised px-4 py-3 text-base text-ink placeholder:text-muted';
+const labelClass = 'block text-small font-semibold text-ink';
+---
+
+<section id="contatti" aria-labelledby="contatti-titolo" class="py-section">
+  <Container class="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+    <div class="reveal">
+      <p class="mb-3 text-label font-semibold tracking-[0.14em] text-accent uppercase">Contatti</p>
+      <h2 id="contatti-titolo" class="text-h2">
+        {site.freeSurvey ? 'Fissiamo il sopralluogo?' : 'Ti preparo un preventivo?'}
+      </h2>
+      <p class="mt-4 max-w-prose text-lead text-muted">
+        Lasciami nome e telefono: ti richiamo io per trovare un giorno comodo.
+        {site.freeSurvey && ' Il sopralluogo è gratuito e non ti impegna a nulla.'}
+      </p>
+
+      <ul class="mt-8 grid gap-3">
+        <li>
+          <Button href={whatsappUrl()} variant="secondary" size="lg" icon="whatsapp" block rel="noopener">
+            Scrivimi su WhatsApp
+          </Button>
+        </li>
+        <li>
+          <Button href={phoneUrl} variant="secondary" size="lg" icon="phone" block>
+            Chiama il {site.phone.display}
+          </Button>
+        </li>
+      </ul>
+      <p class="mt-5 text-small text-muted">
+        Preferisci l’email?
+        <a href={emailUrl} class="inline-flex min-h-11 items-center gap-1.5 break-all text-primary underline underline-offset-4">
+          <Icon name="mail" size={16} />{site.email}
+        </a>
+      </p>
+    </div>
+
+    <form
+      class="reveal rounded-card border border-line bg-raised p-6 sm:p-8"
+      action={endpoint}
+      method="POST"
+      data-contact-form
+      data-has-key={accessKey ? 'true' : 'false'}
+      data-whatsapp={site.whatsapp}
+      data-msg-greeting={messages.greeting}
+      data-msg-success={messages.success}
+      data-msg-error={messages.error}
+      data-msg-whatsapp={messages.whatsapp}
+      data-msg-sending={messages.sending}
+    >
+      <input type="hidden" name="access_key" value={accessKey} />
+      <input type="hidden" name="subject" value={`Nuova richiesta dal sito ${site.brand}`} />
+      <input type="hidden" name="from_name" value={`Sito ${site.brand}`} />
+      {/* Campo trappola per i bot: gli utenti non lo vedono */}
+      <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="grid gap-5">
+        <div>
+          <label for="campo-nome" class={labelClass}>Nome</label>
+          <input id="campo-nome" name="Nome" type="text" autocomplete="name" required class={fieldClass} />
+        </div>
+
+        <div>
+          <label for="campo-telefono" class={labelClass}>Telefono</label>
+          <input
+            id="campo-telefono"
+            name="Telefono"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            required
+            pattern="[0-9+\s().\-]{6,20}"
+            aria-describedby="aiuto-telefono"
+            class={fieldClass}
+          />
+          <p id="aiuto-telefono" class="mt-1.5 text-small text-muted">Lo uso solo per richiamarti.</p>
+        </div>
+
+        <div>
+          <label for="campo-intervento" class={labelClass}>Tipo di intervento</label>
+          <select id="campo-intervento" name="Intervento" required class={fieldClass}>
+            <option value="" disabled selected={!selectedService}>Scegli…</option>
+            {
+              services.map((service) => (
+                <option value={service.data.title} selected={service.id === selectedService}>
+                  {service.data.title}
+                </option>
+              ))
+            }
+            <option value="Altro / non so ancora">Altro / non so ancora</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="campo-messaggio" class={labelClass}>
+            Messaggio <span class="font-normal text-muted">(facoltativo)</span>
+          </label>
+          <textarea
+            id="campo-messaggio"
+            name="Messaggio"
+            rows="3"
+            placeholder="Es. giardino di circa 200 m², siepe da abbassare"
+            class={fieldClass}></textarea>
+        </div>
+
+        <label class="flex min-h-11 cursor-pointer items-start gap-3 text-small text-muted">
+          <input type="checkbox" name="Privacy" value="Accettata" required class="mt-0.5 size-6 shrink-0 accent-primary" />
+          <span>
+            Ho letto la <a href="/privacy/" class="text-primary underline underline-offset-4">Privacy Policy</a> e acconsento
+            al trattamento dei miei dati per essere ricontattato.
+          </span>
+        </label>
+
+        <Button type="submit" size="lg" block data-submit>
+          <span data-submit-label>{cta.primary.label}</span>
+        </Button>
+
+        <p role="status" aria-live="polite" data-form-status class="hidden rounded-field border px-4 py-3 text-small font-medium"></p>
+
+        <noscript>
+          <p class="text-small text-muted">
+            Se il modulo non funziona, chiamami o scrivimi su WhatsApp al {site.phone.display}.
+          </p>
+        </noscript>
+      </div>
+    </form>
+  </Container>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const label = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const idleLabel = label.textContent ?? '';
+    // I testi arrivano dal markup (generati da src/config/site.ts), non sono scritti nello script.
+    const msg = (key: string) => form.dataset[`msg${key}`] ?? '';
+
+    const show = (kind: 'success' | 'error', message: string) => {
+      status.textContent = message;
+      status.classList.remove('hidden', 'border-primary', 'text-primary', 'border-danger', 'text-danger');
+      status.classList.add(...(kind === 'success' ? ['border-primary', 'text-primary'] : ['border-danger', 'text-danger']));
+    };
+
+    const setSending = (sending: boolean) => {
+      button.disabled = sending;
+      form.setAttribute('aria-busy', String(sending));
+      label.textContent = sending ? msg('Sending') : idleLabel;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      // Il campo trappola è compilato solo dai bot.
+      if (data.get('botcheck')) return;
+
+      // Senza chiave del servizio form, la richiesta parte via WhatsApp con il testo già pronto.
+      if (form.dataset.hasKey !== 'true') {
+        const lines = [
+          msg('Greeting'),
+          `Nome: ${data.get('Nome')}`,
+          `Telefono: ${data.get('Telefono')}`,
+          `Intervento: ${data.get('Intervento')}`,
+          data.get('Messaggio') ? `Messaggio: ${data.get('Messaggio')}` : '',
+        ].filter(Boolean);
+        window.open(`https://wa.me/${form.dataset.whatsapp}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+        show('success', msg('Whatsapp'));
+        return;
+      }
+
+      setSending(true);
+      status.classList.add('hidden');
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(data)),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.success === false) throw new Error('invio non riuscito');
+        form.reset();
+        show('success', msg('Success'));
+      } catch {
+        show('error', msg('Error'));
+      } finally {
+        setSending(false);
+      }
+    });
+  }
+</script>

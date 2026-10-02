@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import Section from '../ui/Section.astro';
+
+const questions = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(questions.map(async (entry) => ({ entry, Content: (await render(entry)).Content })));
+---
+
+<Section
+  id="domande"
+  eyebrow="Domande frequenti"
+  title="Le cose che mi chiedono più spesso"
+  tone="subtle"
+>
+  <div class="reveal max-w-3xl divide-y divide-line border-y border-line">
+    {
+      items.map(({ entry, Content }) => (
+        <details class="faq-item group">
+          <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 py-4 font-display text-h3 [&::-webkit-details-marker]:hidden">
+            {entry.data.question}
+            <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-primary transition-transform duration-(--duration-base) ease-out group-open:rotate-45">
+              <Icon name="plus" size={18} />
+            </span>
+          </summary>
+          <div class="prose pr-12 pb-6 text-muted">
+            <Content />
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</Section>

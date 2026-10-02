@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from 'astro:content';
+import { getImage } from '@/config/images';
+import BeforeAfter from '../ui/BeforeAfter.astro';
+import Section from '../ui/Section.astro';
+
+const works = (await getCollection('portfolio')).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(works.map(async (work) => ({ work, Content: (await render(work)).Content })));
+---
+
+<Section
+  id="lavori"
+  eyebrow="Lavori"
+  title="Prima e dopo"
+  intro="Il modo più onesto per giudicare un giardiniere è guardare i suoi lavori. Trascina il divisorio per confrontare."
+>
+  <ul class="grid gap-x-6 gap-y-10 lg:grid-cols-2">
+    {
+      items.map(({ work, Content }, index) => (
+        <li class="reveal" style={`--i:${index % 2}`}>
+          <figure>
+            <BeforeAfter
+              before={getImage(work.data.before)}
+              beforeAlt={work.data.beforeAlt}
+              after={getImage(work.data.after)}
+              afterAlt={work.data.afterAlt}
+              label={work.data.title}
+            />
+            <figcaption class="mt-4">
+              <h3 class="text-h3">
+                <span class:list={[work.data.placeholder && 'placeholder-mark']}>{work.data.title}</span>
+              </h3>
+              {work.data.place && (
+                <p class="mt-1 text-small text-muted">
+                  <span class:list={[work.data.placeholder && 'placeholder-mark']}>{work.data.place}</span>
+                </p>
+              )}
+              <div class:list={['mt-2 text-muted', work.data.placeholder && 'placeholder-text']}>
+                <Content />
+              </div>
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
