@@ -21,10 +21,7 @@ import ResponsiveImage from '../ui/ResponsiveImage.astro';
       <p class="mb-3 text-label font-semibold tracking-[0.14em] text-accent uppercase">Chi sono</p>
       <h2 id="chi-sono-titolo" class="text-h2">Piacere, {site.owner.split(' ')[0]}.</h2>
       <div class="mt-6 max-w-prose space-y-4 text-lead text-muted">
-        <p>
-          Sono {site.owner} e {site.brand} è il mio lavoro: curo giardini, siepi, prati e terrazzi a
-          {site.area.label}.
-        </p>
+        <p>{`Sono ${site.owner} e ${site.brand} è il mio lavoro: curo giardini, siepi, prati e terrazzi a ${site.area.label}.`}</p>
         <p>
           Lavoro in modo semplice. Vengo a vedere di persona, ti dico cosa serve subito e cosa può aspettare, e metto
           tutto per iscritto prima di cominciare.

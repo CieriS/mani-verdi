@@ -12,7 +12,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       <span class="grid size-9 place-items-center rounded-full bg-primary text-on-primary">
         <Icon name="leaf" size={18} />
       </span>
-      <span class="font-display text-[1.3125rem] leading-none font-medium tracking-tight">{site.brand}</span>
+      <span class="font-display text-[1.3125rem] leading-none font-medium tracking-tight whitespace-nowrap">{site.brand}</span>
     </a>
 
     <nav aria-label="Principale" class="hidden lg:block">
@@ -34,7 +34,9 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
     <div class="flex items-center gap-1">
       <ThemeToggle />
-      <Button href={cta.primary.href} class="ml-2 hidden lg:inline-flex">{cta.primary.label}</Button>
+      <div class="ml-2 hidden lg:block">
+        <Button href={cta.primary.href}>{cta.primary.label}</Button>
+      </div>
       <button
         type="button"
         class="inline-flex size-11 items-center justify-center rounded-full text-ink transition-transform duration-(--duration-fast) ease-out active:scale-90 lg:hidden"
@@ -52,7 +54,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 <!-- <dialog> nativo: focus intrappolato, chiusura con Esc e ritorno del focus sono gestiti dal browser -->
 <dialog id="menu-mobile" aria-label="Menu" class="mobile-menu">
   <div class="flex h-header items-center justify-between px-gutter">
-    <span class="font-display text-[1.3125rem] leading-none font-medium tracking-tight">{site.brand}</span>
+    <span class="font-display text-[1.3125rem] leading-none font-medium tracking-tight whitespace-nowrap">{site.brand}</span>
     <button
       type="button"
       class="inline-flex size-11 items-center justify-center rounded-full text-ink transition-transform duration-(--duration-fast) ease-out active:scale-90"
