@@ -1,0 +1,306 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/fraunces/wght.css';
+@import '@fontsource-variable/inter/wght.css';
+
+/* ==========================================================================
+   DESIGN TOKEN — unico punto in cui si definiscono colori, tipografia,
+   spaziature, raggi e animazioni. I componenti usano solo questi nomi.
+   ========================================================================== */
+
+/* Colori: valori per tema. I ruoli semantici sono gli stessi in chiaro e scuro.
+   Dopo ogni modifica lancia `npm run contrast` per verificare il contrasto AA. */
+:root {
+  /* tema:chiaro */
+  color-scheme: light;
+  --bg: #faf7f1;
+  --raised: #ffffff;
+  --subtle: #f2ede2;
+  --ink: #1a1f1b;
+  --muted: #4f5a51;
+  --line: #ddd7c9;
+  --line-strong: #8a8f80;
+  --primary: #2e5a43;
+  --primary-strong: #234835;
+  --on-primary: #ffffff;
+  --accent: #8a4f2b;
+  --danger: #a3271f;
+}
+
+:root[data-theme='dark'] {
+  /* tema:scuro */
+  color-scheme: dark;
+  --bg: #111613;
+  --raised: #19201b;
+  --subtle: #1e2721;
+  --ink: #eceee7;
+  --muted: #a9b4aa;
+  --line: #2e3a32;
+  --line-strong: #6f7d72;
+  --primary: #93c7a6;
+  --primary-strong: #add6bc;
+  --on-primary: #0e1a13;
+  --accent: #dda57c;
+  --danger: #ff9d94;
+}
+
+/* Stessi valori del tema scuro, applicati quando il sistema è in dark mode
+   e l'utente non ha scelto manualmente il tema chiaro. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #111613;
+    --raised: #19201b;
+    --subtle: #1e2721;
+    --ink: #eceee7;
+    --muted: #a9b4aa;
+    --line: #2e3a32;
+    --line-strong: #6f7d72;
+    --primary: #93c7a6;
+    --primary-strong: #add6bc;
+    --on-primary: #0e1a13;
+    --accent: #dda57c;
+    --danger: #ff9d94;
+  }
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-raised: var(--raised);
+  --color-subtle: var(--subtle);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
+
+@theme {
+  /* Tipografia */
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Scala fluida: cresce tra 360px e 1280px senza media query */
+  --text-display: clamp(2.375rem, 1.6rem + 3.4vw, 4.5rem);
+  --text-display--line-height: 1.04;
+  --text-h2: clamp(1.875rem, 1.45rem + 1.9vw, 3rem);
+  --text-h2--line-height: 1.1;
+  --text-h3: clamp(1.3125rem, 1.2rem + 0.5vw, 1.625rem);
+  --text-h3--line-height: 1.2;
+  --text-lead: clamp(1.125rem, 1.06rem + 0.3vw, 1.3125rem);
+  --text-lead--line-height: 1.55;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.3;
+
+  /* Spaziature di sezione e contenitore */
+  --spacing-section: clamp(4rem, 3rem + 5vw, 8rem);
+  --spacing-gutter: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+  --spacing-header: 4.25rem;
+  --spacing-cta-bar: 4.5rem;
+  --container-page: 76rem;
+  --container-prose: 42rem;
+
+  /* Raggi */
+  --radius-card: 1.25rem;
+  --radius-media: 1rem;
+  --radius-field: 0.75rem;
+
+  /* Animazioni: durate ed easing coerenti in tutto il sito */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 500ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--spacing-header) + 1rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--on-primary);
+  }
+
+  /* Su mobile la barra CTA fissa non deve coprire l'elemento con il focus */
+  @media (max-width: 47.99rem) {
+    html {
+      scroll-padding-bottom: calc(var(--spacing-cta-bar) + env(safe-area-inset-bottom) + 1rem);
+    }
+  }
+}
+
+/* ==========================================================================
+   TESTO LUNGO (pagine servizio, privacy)
+   ========================================================================== */
+@layer components {
+  .prose {
+    max-width: var(--container-prose);
+  }
+  .prose > * + * {
+    margin-top: 1.1em;
+  }
+  .prose h2 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    margin-top: 2em;
+  }
+  .prose h3 {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-top: 1.6em;
+  }
+  .prose ul {
+    list-style: disc;
+    padding-left: 1.25em;
+  }
+  .prose li + li {
+    margin-top: 0.4em;
+  }
+  .prose a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .prose strong {
+    font-weight: 600;
+  }
+
+  /* Segnaposto ben visibile per i dati ancora da compilare */
+  .placeholder-mark,
+  .placeholder-text p {
+    display: inline-block;
+    background-color: var(--subtle);
+    border: 1px dashed var(--accent);
+    border-radius: 0.375rem;
+    color: var(--accent);
+    font-weight: 600;
+    padding: 0.05em 0.4em;
+  }
+}
+
+/* ==========================================================================
+   ANIMAZIONI — solo transform e opacity
+   ========================================================================== */
+
+/* Reveal allo scroll. Senza JavaScript il contenuto resta sempre visibile:
+   lo stato nascosto si applica solo se <html> ha la classe .js (script nel <head>). */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+}
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* Progressive enhancement: dove supportate, le scroll-driven animations
+   sostituiscono l'IntersectionObserver (che in quel caso non viene avviato). */
+@supports (animation-timeline: view()) {
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    animation: reveal linear both;
+    animation-timeline: view();
+    animation-range: entry calc(var(--i, 0) * 12%) entry calc(70% + var(--i, 0) * 12%);
+  }
+}
+
+/* View Transitions tra le pagine (cross-document, nessun JavaScript) */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-group(*) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .reveal,
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
