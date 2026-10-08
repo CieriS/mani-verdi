@@ -10,7 +10,7 @@ import ResponsiveImage from '../ui/ResponsiveImage.astro';
   <Container class="grid items-center gap-10 md:grid-cols-[0.8fr_1.2fr] lg:gap-20">
     <ResponsiveImage
       src={getImage(slots.about)}
-      alt="Giardiniere di spalle che rifinisce il bordo di un prato con il decespugliatore"
+      alt={`${site.owner} in un giardino, con le cesoie in mano e i guanti da lavoro`}
       ratio="4/5"
       widths={[400, 640, 960]}
       sizes="(min-width: 48rem) 38vw, 100vw"

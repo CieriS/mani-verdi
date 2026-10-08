@@ -8,7 +8,6 @@ Tutte le foto vengono da [Unsplash](https://unsplash.com) e sono distribuite con
 | --- | --- | --- |
 | `hero/hero-orizzontale.jpg` | @dcpweb | https://unsplash.com/photos/1ff_i7jO-4g |
 | `hero/hero-verticale.jpg` | @jetztabertempo | https://unsplash.com/photos/kwSQrqzKXWM |
-| `chi-sono/tommaso.jpg` | @mklibrary | https://unsplash.com/photos/xWAsrLw_1hk |
 | `servizi/manutenzione-giardini.jpg` | @blinky264 | https://unsplash.com/photos/ZmcOLTGdMbQ |
 | `servizi/potatura-siepi-alberi.jpg` | @peterbeukema | https://unsplash.com/photos/JB-QHEehcwI |
 | `servizi/progettazione-realizzazione-giardini.jpg` | @rstar50 | https://unsplash.com/photos/OK-bkFlixzI |
@@ -26,5 +25,5 @@ Tutte le foto vengono da [Unsplash](https://unsplash.com) e sono distribuite con
 - Il branch è fatto per sembrare il sito finito: nessun avviso visibile. Resta però escluso dai motori di ricerca (`indexable: false` in `src/config/site.ts`).
 - **Recensioni, titoli e luoghi dei lavori sono inventati** per l'anteprima. Prima di pubblicare vanno sostituiti con quelli reali: mostrare al pubblico recensioni non autentiche è una pratica commerciale scorretta (Codice del Consumo).
 - Le due coppie prima/dopo ritraggono davvero lo stesso giardino in due momenti diversi, ritagliate per avvicinare le inquadrature. La prima è quasi sovrapponibile; la seconda è scattata da due punti diversi e lo slider "salta": è l'errore da evitare quando si scattano le foto vere.
-- La foto della sezione "Chi sono" mostra una persona di spalle: non è Tommaso.
+- La foto della sezione "Chi sono" (`chi-sono/tommaso.jpg`) non viene da Unsplash: è un ritratto di Tommaso fornito a parte, formato 3:4, che il sito ritaglia a 4:5.
 - Il terzo lavoro del portfolio è stato tolto perché non c'era una terza coppia credibile.
