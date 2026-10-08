@@ -103,6 +103,18 @@ Per usare un altro servizio (es. Formspree), cambia `PUBLIC_FORM_ENDPOINT` e, se
 
 Tutti i design token sono in [`src/styles/global.css`](src/styles/global.css). Dopo aver cambiato un colore lancia `npm run contrast` per verificare che il contrasto resti a norma su entrambi i temi.
 
+## Accessibilità e protezione dei contenuti
+
+Il sito è progettato sulle WCAG 2.1 livello AA, il riferimento tecnico della legge Stanca (L. 4/2004). La pagina [`/accessibilita/`](src/pages/accessibilita.astro) descrive cosa è stato fatto, i limiti noti e come segnalare un problema; la data di verifica è `accessibilityReviewedAt` in `src/config/site.ts`.
+
+Testi e foto sono protetti:
+
+- il testo non si seleziona (`user-select: none` in `src/styles/global.css`), tranne nei campi del modulo;
+- le immagini non si trascinano;
+- le scorciatoie di copia, taglia, seleziona tutto, salva, sorgente e stampa sono bloccate (script in `src/components/layout/BaseLayout.astro`).
+
+Tab, frecce, Invio, Spazio, Esc, Pag su/giù e lo zoom del browser non vengono mai intercettati: servono a chi naviga da tastiera o con tecnologie assistive. È una protezione di cortesia, non una barriera: chi vuole copiare un contenuto può comunque farlo dagli strumenti del browser.
+
 ## Statistiche (analytics)
 
 Il sito non usa cookie né tracciamento, quindi non serve alcun banner. Il punto di integrazione è la costante `analytics` in fondo a `src/config/site.ts`: le istruzioni sono nel commento. Scegli uno strumento senza cookie (Plausible, Umami, Cloudflare Web Analytics) e aggiorna la sezione "Cookie e statistiche" di `src/pages/privacy.astro`.

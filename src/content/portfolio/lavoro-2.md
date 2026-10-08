@@ -1,6 +1,6 @@
 ---
-title: "Esempio: giardino rimesso in ordine"
-place: "Foto dimostrativa, non è un lavoro di Mani Verdi"
+title: Giardino rimesso in ordine dopo l'inverno
+place: Casalecchio di Reno
 service: manutenzione-giardini
 before: portfolio/lavoro-2-prima
 beforeAlt: "Giardino lungo e stretto in inverno, con il prato rovinato e le piante spoglie"
@@ -9,4 +9,4 @@ afterAlt: "Lo stesso giardino con il prato tagliato e le bordure in ordine"
 order: 2
 ---
 
-Stesso giardino, ma scattato da due punti diversi: il risultato si capisce, però lo slider "salta". Ecco perché conviene fissare un riferimento prima di scattare.
+Giardino fermo da mesi. Pulizia delle bordure, potatura degli arbusti e ripresa del prato, poi passaggi programmati per tenerlo così.

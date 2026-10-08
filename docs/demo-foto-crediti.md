@@ -23,7 +23,8 @@ Tutte le foto vengono da [Unsplash](https://unsplash.com) e sono distribuite con
 
 ## Note
 
-- Le due coppie prima/dopo ritraggono davvero lo stesso giardino in due momenti diversi. Le ho ritagliate per avvicinare le inquadrature: la prima è quasi sovrapponibile, la seconda no, ed è lasciata così apposta per mostrare la differenza.
+- Il branch è fatto per sembrare il sito finito: nessun avviso visibile. Resta però escluso dai motori di ricerca (`indexable: false` in `src/config/site.ts`).
+- **Recensioni, titoli e luoghi dei lavori sono inventati** per l'anteprima. Prima di pubblicare vanno sostituiti con quelli reali: mostrare al pubblico recensioni non autentiche è una pratica commerciale scorretta (Codice del Consumo).
+- Le due coppie prima/dopo ritraggono davvero lo stesso giardino in due momenti diversi, ritagliate per avvicinare le inquadrature. La prima è quasi sovrapponibile; la seconda è scattata da due punti diversi e lo slider "salta": è l'errore da evitare quando si scattano le foto vere.
 - La foto della sezione "Chi sono" mostra una persona di spalle: non è Tommaso.
 - Il terzo lavoro del portfolio è stato tolto perché non c'era una terza coppia credibile.
-- L'avviso in cima alle pagine e l'esclusione dai motori di ricerca dipendono da `demoNotice` in `src/config/site.ts`.

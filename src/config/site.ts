@@ -61,14 +61,17 @@ export const site = {
     url: 'https://web3forms.com',
   },
 
+  /** Data dell'ultima verifica di accessibilità (AAAA-MM-GG), mostrata in /accessibilita/. */
+  accessibilityReviewedAt: '2026-10-08',
+
   /** Data dell'ultimo aggiornamento della Privacy Policy (AAAA-MM-GG). */
   privacyUpdatedAt: '2026-10-02',
 
   /**
-   * Avviso mostrato in cima a ogni pagina. Con un valore diverso da `null` il sito
-   * viene anche escluso dai motori di ricerca. Sul sito definitivo deve essere `null`.
+   * `false` esclude il sito dai motori di ricerca (meta robots noindex).
+   * Va riportato a `true` solo quando foto, lavori e recensioni sono quelli reali.
    */
-  demoNotice: 'Versione dimostrativa: le foto sono di repertorio e non mostrano lavori di Mani Verdi.' as string | null,
+  indexable: false,
 
   locale: 'it-IT',
 } as const;

@@ -2,7 +2,6 @@
 import '@/styles/global.css';
 import { getImage as optimize } from 'astro:assets';
 import displayFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
-import textFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import { getImage, slots } from '@/config/images';
 import { analytics, site } from '@/config/site';
 import Footer from './Footer.astro';
@@ -49,7 +48,7 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {(noindex || site.demoNotice) && <meta name="robots" content="noindex, follow" />}
+    {(noindex || !site.indexable) && <meta name="robots" content="noindex, follow" />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -58,7 +57,6 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     <meta name="format-detection" content="telephone=no" />
 
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={textFont} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="it_IT" />
@@ -83,19 +81,29 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     >
       Vai al contenuto
     </a>
-    {
-      site.demoNotice && (
-        <p role="note" class="bg-accent px-gutter py-2 text-center text-small font-semibold text-bg">
-          {site.demoNotice}
-        </p>
-      )
-    }
     <Header />
     <main id="contenuto" tabindex="-1" class="outline-none">
       <slot />
     </main>
     <Footer />
     <MobileCTABar />
+
+    <script>
+      // Protezione dei contenuti: niente trascinamento delle immagini e niente scorciatoie
+      // di copia, salvataggio, stampa e sorgente. Restano attivi tutti i tasti di navigazione
+      // (Tab, frecce, Invio, Spazio, Esc, Pag su/giù, Inizio/Fine) e lo zoom del browser,
+      // indispensabili per l'accessibilità. Nei campi del modulo copia e incolla funzionano.
+      document.addEventListener('dragstart', (event) => {
+        if (event.target instanceof HTMLImageElement) event.preventDefault();
+      });
+      const blockedKeys = new Set(['c', 'x', 'a', 's', 'u', 'p']);
+      document.addEventListener('keydown', (event) => {
+        if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
+        const target = event.target;
+        const editing = target instanceof HTMLElement && target.matches('input, textarea, select, [contenteditable]');
+        if (!editing && blockedKeys.has(event.key.toLowerCase())) event.preventDefault();
+      });
+    </script>
 
     <script>
       // Fallback del reveal per i browser senza scroll-driven animations.

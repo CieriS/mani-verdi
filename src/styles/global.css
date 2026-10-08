@@ -147,6 +147,23 @@
     overflow-x: clip;
   }
 
+  /* Protezione dei contenuti: il testo non si seleziona e le immagini non si trascinano.
+     I campi del modulo restano selezionabili, altrimenti non si potrebbero correggere. */
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input,
+  textarea,
+  select {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
+
   h1,
   h2,
   h3 {

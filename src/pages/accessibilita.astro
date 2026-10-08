@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@/components/layout/BaseLayout.astro';
+import Container from '@/components/ui/Container.astro';
+import { emailUrl, phoneUrl, site } from '@/config/site';
+
+const updated = new Intl.DateTimeFormat(site.locale, { dateStyle: 'long' }).format(new Date(site.accessibilityReviewedAt));
+---
+
+<BaseLayout
+  title="Accessibilità"
+  description={`Come è stato reso accessibile il sito ${site.brand} e a chi segnalare un problema di accessibilità.`}
+>
+  <Container class="py-14 lg:py-20">
+    <div class="prose">
+      <h1 class="text-h2">Accessibilità</h1>
+      <p class="text-muted">Ultima verifica: {updated}</p>
+
+      <p>
+        Voglio che chiunque possa usare questo sito, con qualsiasi dispositivo e con qualsiasi tecnologia assistiva. Il
+        sito è stato progettato seguendo le Linee guida per l’accessibilità dei contenuti web (WCAG) 2.1, livello AA,
+        che sono il riferimento tecnico della legge 9 gennaio 2004, n. 4 (“legge Stanca”) e della norma europea EN 301
+        549.
+      </p>
+
+      <h2>Cosa è stato fatto</h2>
+      <ul>
+        <li>Tutto il sito si usa da tastiera: menu, domande frequenti, confronto prima/dopo e modulo di contatto.</li>
+        <li>Un collegamento “Vai al contenuto” permette di saltare il menu, e il focus è sempre visibile.</li>
+        <li>I colori rispettano il contrasto minimo richiesto, sia con il tema chiaro sia con quello scuro.</li>
+        <li>Il testo si può ingrandire fino al 200% e la pagina si adatta senza scorrimento orizzontale.</li>
+        <li>Le immagini hanno un testo alternativo e i campi del modulo hanno etichette esplicite.</li>
+        <li>Pulsanti e collegamenti hanno un’area di tocco di almeno 44 pixel.</li>
+        <li>Le animazioni si disattivano se sul dispositivo è attiva l’opzione “riduci movimento”.</li>
+        <li>I messaggi del modulo (invio, conferma, errore) vengono annunciati dagli screen reader.</li>
+      </ul>
+
+      <h2>Stato di conformità</h2>
+      <p>
+        In base a una verifica interna, fatta con strumenti automatici e prove manuali da tastiera, il sito risulta
+        conforme alle WCAG 2.1 livello AA, con i limiti indicati qui sotto. La verifica non sostituisce una
+        certificazione rilasciata da un ente terzo.
+      </p>
+
+      <h2>Limiti noti</h2>
+      <ul>
+        <li>
+          Per proteggere testi e fotografie, la selezione del testo e alcune scorciatoie da tastiera (copia, salva,
+          stampa) sono disattivate. Navigazione da tastiera, zoom e lettura con screen reader non sono toccati. Se ti
+          serve una parte del contenuto in un altro formato, chiedimela: te la invio volentieri.
+        </li>
+        <li>
+          Scrivendomi su WhatsApp si esce da questo sito: l’accessibilità di quel servizio non dipende da me.
+        </li>
+      </ul>
+
+      <h2>Segnalare un problema</h2>
+      <p>
+        Se qualcosa non funziona con il tuo dispositivo o con la tua tecnologia assistiva, scrivimi a
+        <a href={emailUrl}>{site.email}</a> oppure chiamami al <a href={phoneUrl}>{site.phone.display}</a>. Dimmi quale
+        pagina stavi usando e cosa non ha funzionato: rispondo e sistemo il prima possibile.
+      </p>
+    </div>
+  </Container>
+</BaseLayout>

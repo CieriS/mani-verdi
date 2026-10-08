@@ -22,7 +22,7 @@ const dateFormat = new Intl.DateTimeFormat(site.locale, { month: 'long', year: '
         <li class="reveal" style={`--i:${index % 3}`}>
           <Card as="figure" class="flex h-full flex-col">
             {review.data.rating && (
-              <p class="mb-3 text-accent" aria-label={`Valutazione: ${review.data.rating} su 5`}>
+              <p class="mb-3 text-accent" role="img" aria-label={`Valutazione: ${review.data.rating} su 5`}>
                 <span aria-hidden="true">{'★'.repeat(review.data.rating)}</span>
               </p>
             )}
