@@ -12,25 +12,28 @@ import Icon from '../ui/Icon.astro';
 const mobile = getImage(slots.heroMobile);
 const desktop = getImage(slots.heroDesktop);
 const DESKTOP_QUERY = '(min-width: 64rem)';
+// È l'immagine LCP della home: qualità tarata per restare leggera su rete mobile.
+const QUALITY = { avif: 42, webp: 62, jpg: 70 } as const;
+const MOBILE_SIZES = 'calc(100vw - 2.5rem)';
 
 async function variants(src: ImageMetadata, widths: number[], ratio: number, format: 'avif' | 'webp' | 'jpg') {
   const usable = widths.filter((w) => w <= src.width);
   const list = await Promise.all(
     (usable.length ? usable : [src.width]).map(async (width) => {
-      const image = await optimize({ src, width, height: Math.round(width / ratio), fit: 'cover', format });
+      const image = await optimize({ src, width, height: Math.round(width / ratio), fit: 'cover', format, quality: QUALITY[format] });
       return { url: image.src, width };
     }),
   );
   return { srcset: list.map((v) => `${v.url} ${v.width}w`).join(', '), fallback: list[Math.min(1, list.length - 1)]! };
 }
 
-const mobileWidths = [400, 640, 800, 1200];
+const mobileWidths = [400, 640, 800, 960];
 const desktopWidths = [480, 640, 960, 1280];
 const sources = [
   { media: DESKTOP_QUERY, type: 'image/avif', sizes: '(min-width: 80rem) 32rem, 42vw', ...(await variants(desktop, desktopWidths, 4 / 5, 'avif')) },
   { media: DESKTOP_QUERY, type: 'image/webp', sizes: '(min-width: 80rem) 32rem, 42vw', ...(await variants(desktop, desktopWidths, 4 / 5, 'webp')) },
-  { media: undefined, type: 'image/avif', sizes: '100vw', ...(await variants(mobile, mobileWidths, 4 / 3, 'avif')) },
-  { media: undefined, type: 'image/webp', sizes: '100vw', ...(await variants(mobile, mobileWidths, 4 / 3, 'webp')) },
+  { media: undefined, type: 'image/avif', sizes: MOBILE_SIZES, ...(await variants(mobile, mobileWidths, 4 / 3, 'avif')) },
+  { media: undefined, type: 'image/webp', sizes: MOBILE_SIZES, ...(await variants(mobile, mobileWidths, 4 / 3, 'webp')) },
 ];
 const fallback = await variants(mobile, mobileWidths, 4 / 3, 'jpg');
 ---
@@ -66,7 +69,7 @@ const fallback = await variants(mobile, mobileWidths, 4 / 3, 'jpg');
       <img
         src={fallback.fallback.url}
         srcset={fallback.srcset}
-        sizes="100vw"
+        sizes={MOBILE_SIZES}
         width={fallback.fallback.width}
         height={Math.round((fallback.fallback.width * 3) / 4)}
         alt="Giardino curato con prato tagliato, aiuole fiorite e alberi sullo sfondo"
