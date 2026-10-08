@@ -3,7 +3,7 @@ title: Impianti di irrigazione
 benefit: Il giardino si bagna da solo, anche quando sei via, senza sprecare acqua.
 summary: Impianti di irrigazione automatica per prati, aiuole, siepi e vasi, con programmazione su misura.
 image: servizi/impianti-irrigazione
-imageAlt: Irrigatore in funzione su un prato verde
+imageAlt: Irrigatori in funzione su un prato alberato, in controluce
 order: 5
 includes:
   - Studio delle zone da irrigare

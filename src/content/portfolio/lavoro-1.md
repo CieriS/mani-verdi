@@ -1,12 +1,12 @@
 ---
-title: "[LAVORO 1: titolo da inserire]"
-place: "[LUOGO]"
+title: "Esempio: prato secco rigenerato"
+place: "Foto dimostrativa, non è un lavoro di Mani Verdi"
+service: prati-semina-rotoli
 before: portfolio/lavoro-1-prima
-beforeAlt: "Segnaposto: foto del lavoro 1 prima dell'intervento"
+beforeAlt: "Giardino recintato con il prato secco e ingiallito"
 after: portfolio/lavoro-1-dopo
-afterAlt: "Segnaposto: foto del lavoro 1 dopo l'intervento"
+afterAlt: "Lo stesso giardino con il prato verde e fitto"
 order: 1
-placeholder: true
 ---
 
-[DESCRIZIONE REALE DEL LAVORO: cosa c'era, cosa è stato fatto, in quanto tempo]
+Coppia quasi sovrapponibile: stesso punto, stessa altezza, stesso orientamento. Il muro in fondo resta fermo e l'occhio vede solo il prato che cambia.

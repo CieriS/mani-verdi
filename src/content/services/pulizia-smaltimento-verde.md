@@ -3,7 +3,7 @@ title: Pulizia e smaltimento del verde
 benefit: Uno spazio di nuovo libero e utilizzabile, e nessun sacco da portare via.
 summary: Pulizia di giardini trascurati, sfalcio di erba alta, rimozione di rovi e smaltimento del verde.
 image: servizi/pulizia-smaltimento-verde
-imageAlt: Area verde ripulita da erba alta e rovi
+imageAlt: Persona che taglia rovi e arbusti secchi ai margini di un prato
 order: 6
 includes:
   - Sfalcio di erba alta e aree incolte

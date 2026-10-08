@@ -3,7 +3,7 @@ title: Terrazzi e balconi
 benefit: Anche pochi metri diventano un angolo verde che vivi volentieri.
 summary: Allestimento e cura di terrazzi e balconi, con piante adatte all'esposizione, rinvasi e irrigazione a goccia.
 image: servizi/terrazzi-balconi
-imageAlt: Terrazzo con vasi e piante curate
+imageAlt: Vasi di gerani rossi in fiore su un terrazzo
 order: 7
 includes:
   - Scelta di piante adatte a esposizione e spazio

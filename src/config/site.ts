@@ -64,6 +64,12 @@ export const site = {
   /** Data dell'ultimo aggiornamento della Privacy Policy (AAAA-MM-GG). */
   privacyUpdatedAt: '2026-10-02',
 
+  /**
+   * Avviso mostrato in cima a ogni pagina. Con un valore diverso da `null` il sito
+   * viene anche escluso dai motori di ricerca. Sul sito definitivo deve essere `null`.
+   */
+  demoNotice: 'Versione dimostrativa: le foto sono di repertorio e non mostrano lavori di Mani Verdi.' as string | null,
+
   locale: 'it-IT',
 } as const;
 

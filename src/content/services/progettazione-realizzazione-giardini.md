@@ -3,7 +3,7 @@ title: Progettazione e realizzazione giardini
 benefit: Un giardino pensato per come lo vivi, bello subito e semplice da mantenere.
 summary: Dal terreno spoglio al giardino finito, o il rinnovo di uno spazio che non ti convince più.
 image: servizi/progettazione-realizzazione-giardini
-imageAlt: Giardino appena realizzato con aiuole nuove e prato
+imageAlt: Aiuola fiorita dai bordi curati in mezzo a un prato
 order: 3
 includes:
   - Sopralluogo e ascolto di come vuoi usare lo spazio

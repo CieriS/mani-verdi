@@ -49,7 +49,7 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {(noindex || site.demoNotice) && <meta name="robots" content="noindex, follow" />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -83,6 +83,13 @@ const ogImageUrl = new URL(ogImage.src, Astro.site);
     >
       Vai al contenuto
     </a>
+    {
+      site.demoNotice && (
+        <p role="note" class="bg-accent px-gutter py-2 text-center text-small font-semibold text-bg">
+          {site.demoNotice}
+        </p>
+      )
+    }
     <Header />
     <main id="contenuto" tabindex="-1" class="outline-none">
       <slot />

@@ -3,7 +3,7 @@ title: Prati, semina e a rotoli
 benefit: Un prato fitto e uniforme, da usare e non solo da guardare.
 summary: Prato nuovo a semina o a rotoli pronto effetto, e rigenerazione dei prati rovinati.
 image: servizi/prati-semina-rotoli
-imageAlt: Prato nuovo, verde e uniforme, davanti a una casa
+imageAlt: Prato a rotoli appena posato, con le zolle ancora visibili
 order: 4
 includes:
   - Preparazione e livellamento del terreno

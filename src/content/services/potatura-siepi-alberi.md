@@ -3,7 +3,7 @@ title: Potatura siepi e alberi
 benefit: Siepi regolari e piante sane, senza salire tu sulla scala.
 summary: Potatura di siepi, arbusti e alberi nel periodo giusto, con ramaglie portate via.
 image: servizi/potatura-siepi-alberi
-imageAlt: Siepe potata con linee regolari lungo il confine di un giardino
+imageAlt: Tagliasiepi al lavoro sulla sommità di una siepe
 order: 2
 includes:
   - Potatura e sagomatura delle siepi

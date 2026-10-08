@@ -3,7 +3,7 @@ title: Manutenzione ordinaria giardini
 benefit: Il giardino resta in ordine tutto l'anno e tu ti riprendi i fine settimana.
 summary: Taglio del prato, siepi, aiuole e pulizia con passaggi programmati, per un giardino sempre in ordine senza pensieri.
 image: servizi/manutenzione-giardini
-imageAlt: Giardino con prato tagliato e aiuole in ordine dopo un intervento di manutenzione
+imageAlt: Tosaerba fermo su un prato appena tagliato, con aiuole fiorite sullo sfondo
 order: 1
 includes:
   - Taglio del prato e rifinitura dei bordi
