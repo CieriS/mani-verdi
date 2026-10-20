@@ -14,6 +14,15 @@ Sito statico di Tommaso Boschi, giardiniere a Sasso Marconi. Obiettivo: trasform
 | `npm run preview` | Serve in locale la cartella `dist/` |
 | `npm run contrast` | Verifica il contrasto WCAG AA dei colori (tema chiaro e scuro) |
 | `npm run placeholders` | Rigenera i segnaposto mancanti delle foto (non tocca le foto esistenti) |
+| `npm test` | Test end-to-end sulla build: accessibilità (axe, WCAG A/AA) e risposta di ogni pagina; i confronti visivi solo su Linux |
+
+## Test
+
+- **Pagine controllate**: home, privacy, 404 e ogni servizio, letti da `src/content/services/`: un servizio nuovo entra nei test da solo (`e2e/pages.ts`).
+- **Accessibilità** (`e2e/a11y.spec.ts`): axe su ogni pagina, desktop e telefono; nessuna violazione WCAG A/AA ammessa.
+- **Regressione visiva** (`e2e/visual.spec.ts`): uno screenshot a pagina intera per pagina, desktop e telefono, in `e2e/__screenshots__/`. I riferimenti valgono per Chromium su Linux (come la CI); dal Mac si lanciano nel container con `~/sc_workspace/repositories/_infra/scripts/playwright-docker.sh . -- e2e/visual.spec.ts`. Dopo una modifica visiva voluta: stesso comando con `--update-snapshots`, guardare le immagini e committarle nello stesso commit (oppure scaricare l'artefatto `visual-references` della CI fallita). Quando arrivano le foto vere vanno rigenerati.
+- **Budget di prestazioni** (`lighthouserc.json`): Lighthouse mobile, tre esecuzioni su home, un servizio e privacy. Errori su accessibilità, SEO e buone pratiche sotto 100, LCP oltre 3 s, CLS oltre 0,02 e peso oltre 500 KB; punteggio e TBT solo avvisi (dipendono dalla macchina). Misurato il 2026-10-21 con le foto segnaposto: 100 in tutte le categorie, LCP 1,5–1,9 s, CLS 0, 100–153 KB. In locale: `npm run build && npx @lhci/cli@0.15.1 autorun`.
+- **CI** (`.github/workflows/ci.yml`): tipi, contrasto e build, poi test end-to-end e budget, a ogni PR e a ogni push su `main`.
 
 ## Struttura
 
