@@ -127,3 +127,7 @@ Dopo aver collegato il dominio:
 1. controlla che `SITE_URL` corrisponda al dominio reale e rilancia il deploy;
 2. scrivi il nome dell'hosting in `hostingProvider` (`src/config/site.ts`), perché compare nella Privacy Policy;
 3. invia `https://<dominio>/sitemap-index.xml` a Google Search Console.
+
+## Hook di git
+
+`.githooks/pre-push` parte prima di ogni push: cerca segreti nei commit in uscita (gitleaks, o la sua immagine Docker se manca il binario) e poi lancia i controlli veloci (`npm run check && npm run contrast`). Si attiva all'installazione con lo script `prepare`. Per saltarlo una volta: `git push --no-verify`. Sulla CI, `.github/workflows/secret-scan.yml` controlla tutta la cronologia di ogni branch e tag.
